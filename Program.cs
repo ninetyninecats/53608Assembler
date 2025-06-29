@@ -35,426 +35,96 @@ public class Assembler {
 
         switch (opcode) {
         case "ADD":
-            switch (arg1[0]) {
-            case '#':
-                if (arg2 is not null)
-                    throw new Exception("Invalid ADD instruction");
-                output.WriteByte(0b10000110);
-                output.WriteByte(Convert.FromHexString(arg1.Substring(1))[0]);
-                break;
-            case '$':
-                if (arg2 is not null)
-                    throw new Exception("Invalid ADD instruction");
-
-                if (arg1.Substring(1).Length != 4)
-                    throw new Exception(
-                        "Address must have 4 hexadecimal digits");
-                output.WriteByte(0b10000101);
-                output.WriteByte((byte)Convert.ToInt16(
-                    Convert.FromHexString(arg1.Substring(1))[0] * 256 +
-                    Convert.FromHexString(arg1.Substring(1))[1]));
-                output.WriteByte(
-                    (byte)(Convert.ToInt16(
-                               Convert.FromHexString(arg1.Substring(1))[0] *
-                                   256 +
-                               Convert.FromHexString(arg1.Substring(1))[1]) >>
-                           8));
-                break;
-            case 'A':
-                if (arg1.Length != 1 || arg2 is not null)
-                    throw new Exception("Invalid ADD instruction");
-                output.WriteByte(0b10000000);
-                break;
-
-            case 'B':
-                if (arg1.Length != 1 || arg2 is not null)
-                    throw new Exception("Invalid ADD instruction");
-                output.WriteByte(0b10000001);
-                break;
-
-            case 'C':
-                if (arg1.Length != 1 || arg2 is not null)
-                    throw new Exception("Invalid ADD instruction");
-                output.WriteByte(0b10000010);
-                break;
-
-            case 'D':
-                if (arg1.Length != 1 || arg2 is not null)
-                    throw new Exception("Invalid ADD instruction");
-                output.WriteByte(0b10000011);
-                break;
-            case 'P':
-                if (arg1.Length != 1 || arg2 is not null)
-                    throw new Exception("Invalid ADD instruction");
-                output.WriteByte(0b10000100);
-                break;
-
-            default:
-                throw new Exception("Unknown argument");
-            }
+            if (arg2 is not null)
+                throw new Exception("Invalid ADD instruction");
+            AssembleArithmeticInstruction(ArithmeticOpcode.ADD, arg1);
             break;
         case "SUB":
-            switch (arg1[0]) {
-
-            case '#':
-                if (arg2 is not null)
-                    throw new Exception("Invalid ADD instruction");
-                output.WriteByte(0b10001110);
-                output.WriteByte(Convert.FromHexString(arg1.Substring(1))[0]);
-                break;
-            case '$':
-                if (arg2 is not null)
-                    throw new Exception("Invalid ADD instruction");
-
-                if (arg1.Substring(1).Length != 4)
-                    throw new Exception(
-                        "Address must have 4 hexadecimal digits");
-                output.WriteByte(0b10001101);
-                output.WriteByte((byte)Convert.ToInt16(
-                    Convert.FromHexString(arg1.Substring(1))[0] * 256 +
-                    Convert.FromHexString(arg1.Substring(1))[1]));
-                output.WriteByte(
-                    (byte)(Convert.ToInt16(
-                               Convert.FromHexString(arg1.Substring(1))[0] *
-                                   256 +
-                               Convert.FromHexString(arg1.Substring(1))[1]) >>
-                           8));
-                break;
-            case 'A':
-                if (arg1.Length != 1 || arg2 is not null)
-                    throw new Exception("Invalid ADD instruction");
-                output.WriteByte(0b10001000);
-                break;
-
-            case 'B':
-                if (arg1.Length != 1 || arg2 is not null)
-                    throw new Exception("Invalid ADD instruction");
-                output.WriteByte(0b10001001);
-                break;
-
-            case 'C':
-                if (arg1.Length != 1 || arg2 is not null)
-                    throw new Exception("Invalid ADD instruction");
-                output.WriteByte(0b10001010);
-                break;
-
-            case 'D':
-                if (arg1.Length != 1 || arg2 is not null)
-                    throw new Exception("Invalid ADD instruction");
-                output.WriteByte(0b10001011);
-                break;
-            case 'P':
-                if (arg1.Length != 1 || arg2 is not null)
-                    throw new Exception("Invalid ADD instruction");
-                output.WriteByte(0b10001100);
-                break;
-
-            default:
-                throw new Exception("Unknown argument");
-            }
+            if (arg2 is not null)
+                throw new Exception("Invalid ADD instruction");
+            AssembleArithmeticInstruction(ArithmeticOpcode.SUB, arg1);
             break;
         case "MUL":
-            switch (arg1[0]) {
-            case '#':
-                if (arg2 is not null)
-                    throw new Exception("Invalid ADD instruction");
-
-                output.WriteByte(0b10010110);
-                output.WriteByte(Convert.FromHexString(arg1.Substring(1))[0]);
-                break;
-            case '$':
-                if (arg2 is not null)
-                    throw new Exception("Invalid ADD instruction");
-
-                if (arg1.Substring(1).Length != 4)
-                    throw new Exception(
-                        "Address must have 4 hexadecimal digits");
-                output.WriteByte(0b10010101);
-                output.WriteByte((byte)Convert.ToInt16(
-                    Convert.FromHexString(arg1.Substring(1))[0] * 256 +
-                    Convert.FromHexString(arg1.Substring(1))[1]));
-                output.WriteByte(
-                    (byte)(Convert.ToInt16(
-                               Convert.FromHexString(arg1.Substring(1))[0] *
-                                   256 +
-                               Convert.FromHexString(arg1.Substring(1))[1]) >>
-                           8));
-                break;
-            case 'A':
-                if (arg1.Length != 1 || arg2 is not null)
-                    throw new Exception("Invalid ADD instruction");
-                output.WriteByte(0b10010000);
-                break;
-
-            case 'B':
-                if (arg1.Length != 1 || arg2 is not null)
-                    throw new Exception("Invalid ADD instruction");
-                output.WriteByte(0b10010001);
-                break;
-
-            case 'C':
-                if (arg1.Length != 1 || arg2 is not null)
-                    throw new Exception("Invalid ADD instruction");
-                output.WriteByte(0b10010010);
-                break;
-
-            case 'D':
-                if (arg1.Length != 1 || arg2 is not null)
-                    throw new Exception("Invalid ADD instruction");
-                output.WriteByte(0b10010011);
-                break;
-            case 'P':
-                if (arg1.Length != 1 || arg2 is not null)
-                    throw new Exception("Invalid ADD instruction");
-                output.WriteByte(0b10010100);
-                break;
-
-            default:
-                throw new Exception("Unknown argument");
-            }
+            if (arg2 is not null)
+                throw new Exception("Invalid ADD instruction");
+            AssembleArithmeticInstruction(ArithmeticOpcode.MUL, arg1);
             break;
         case "SMUL":
-            switch (arg1[0]) {
-            case '#':
-                if (arg2 is not null)
-                    throw new Exception("Invalid ADD instruction");
-
-                output.WriteByte(0b10011110);
-                output.WriteByte(Convert.FromHexString(arg1.Substring(1))[0]);
-                break;
-            case '$':
-                if (arg2 is not null)
-                    throw new Exception("Invalid ADD instruction");
-
-                if (arg1.Substring(1).Length != 4)
-                    throw new Exception(
-                        "Address must have 4 hexadecimal digits");
-                output.WriteByte(0b10011101);
-                output.WriteByte((byte)Convert.ToInt16(
-                    Convert.FromHexString(arg1.Substring(1))[0] * 256 +
-                    Convert.FromHexString(arg1.Substring(1))[1]));
-                output.WriteByte(
-                    (byte)(Convert.ToInt16(
-                               Convert.FromHexString(arg1.Substring(1))[0] *
-                                   256 +
-                               Convert.FromHexString(arg1.Substring(1))[1]) >>
-                           8));
-                break;
-            case 'A':
-                if (arg1.Length != 1 || arg2 is not null)
-                    throw new Exception("Invalid ADD instruction");
-                output.WriteByte(0b10011000);
-                break;
-
-            case 'B':
-                if (arg1.Length != 1 || arg2 is not null)
-                    throw new Exception("Invalid ADD instruction");
-                output.WriteByte(0b10011001);
-                break;
-
-            case 'C':
-                if (arg1.Length != 1 || arg2 is not null)
-                    throw new Exception("Invalid ADD instruction");
-                output.WriteByte(0b10011010);
-                break;
-
-            case 'D':
-                if (arg1.Length != 1 || arg2 is not null)
-                    throw new Exception("Invalid ADD instruction");
-                output.WriteByte(0b10011011);
-                break;
-            case 'P':
-                if (arg1.Length != 1 || arg2 is not null)
-                    throw new Exception("Invalid ADD instruction");
-                output.WriteByte(0b10011100);
-                break;
-
-            default:
-                throw new Exception("Unknown argument");
-            }
+            if (arg2 is not null)
+                throw new Exception("Invalid ADD instruction");
+            AssembleArithmeticInstruction(ArithmeticOpcode.SMUL, arg1);
             break;
         case "DIV":
-            switch (arg1[0]) {
-            case '#':
-                if (arg2 is not null)
-                    throw new Exception("Invalid ADD instruction");
-
-                output.WriteByte(0b10100110);
-                output.WriteByte(Convert.FromHexString(arg1.Substring(1))[0]);
-                break;
-            case '$':
-                if (arg2 is not null)
-                    throw new Exception("Invalid ADD instruction");
-
-                if (arg1.Substring(1).Length != 4)
-                    throw new Exception(
-                        "Address must have 4 hexadecimal digits");
-                output.WriteByte(0b10100101);
-                output.WriteByte((byte)Convert.ToInt16(
-                    Convert.FromHexString(arg1.Substring(1))[0] * 256 +
-                    Convert.FromHexString(arg1.Substring(1))[1]));
-                output.WriteByte(
-                    (byte)(Convert.ToInt16(
-                               Convert.FromHexString(arg1.Substring(1))[0] *
-                                   256 +
-                               Convert.FromHexString(arg1.Substring(1))[1]) >>
-                           8));
-                break;
-            case 'A':
-                if (arg1.Length != 1 || arg2 is not null)
-                    throw new Exception("Invalid ADD instruction");
-                output.WriteByte(0b10100000);
-                break;
-
-            case 'B':
-                if (arg1.Length != 1 || arg2 is not null)
-                    throw new Exception("Invalid ADD instruction");
-                output.WriteByte(0b10100001);
-                break;
-
-            case 'C':
-                if (arg1.Length != 1 || arg2 is not null)
-                    throw new Exception("Invalid ADD instruction");
-                output.WriteByte(0b10100010);
-                break;
-
-            case 'D':
-                if (arg1.Length != 1 || arg2 is not null)
-                    throw new Exception("Invalid ADD instruction");
-                output.WriteByte(0b10100011);
-                break;
-            case 'P':
-                if (arg1.Length != 1 || arg2 is not null)
-                    throw new Exception("Invalid ADD instruction");
-                output.WriteByte(0b10100100);
-                break;
-
-            default:
-                throw new Exception("Unknown argument");
-            }
+            if (arg2 is not null)
+                throw new Exception("Invalid ADD instruction");
+            AssembleArithmeticInstruction(ArithmeticOpcode.DIV, arg1);
             break;
         case "SDIV":
-            switch (arg1[0]) {
-            case '#':
-                if (arg2 is not null)
-                    throw new Exception("Invalid ADD instruction");
-
-                output.WriteByte(0b10101110);
-                output.WriteByte(Convert.FromHexString(arg1.Substring(1))[0]);
-                break;
-            case '$':
-                if (arg2 is not null)
-                    throw new Exception("Invalid ADD instruction");
-
-                if (arg1.Substring(1).Length != 4)
-                    throw new Exception(
-                        "Address must have 4 hexadecimal digits");
-                output.WriteByte(0b10101101);
-                output.WriteByte((byte)Convert.ToInt16(
-                    Convert.FromHexString(arg1.Substring(1))[0] * 256 +
-                    Convert.FromHexString(arg1.Substring(1))[1]));
-                output.WriteByte(
-                    (byte)(Convert.ToInt16(
-                               Convert.FromHexString(arg1.Substring(1))[0] *
-                                   256 +
-                               Convert.FromHexString(arg1.Substring(1))[1]) >>
-                           8));
-                break;
-            case 'A':
-                if (arg1.Length != 1 || arg2 is not null)
-                    throw new Exception("Invalid ADD instruction");
-                output.WriteByte(0b10101000);
-                break;
-
-            case 'B':
-                if (arg1.Length != 1 || arg2 is not null)
-                    throw new Exception("Invalid ADD instruction");
-                output.WriteByte(0b10101001);
-                break;
-
-            case 'C':
-                if (arg1.Length != 1 || arg2 is not null)
-                    throw new Exception("Invalid ADD instruction");
-                output.WriteByte(0b10101010);
-                break;
-
-            case 'D':
-                if (arg1.Length != 1 || arg2 is not null)
-                    throw new Exception("Invalid ADD instruction");
-                output.WriteByte(0b10101011);
-                break;
-            case 'P':
-                if (arg1.Length != 1 || arg2 is not null)
-                    throw new Exception("Invalid ADD instruction");
-                output.WriteByte(0b10101100);
-                break;
-
-            default:
-                throw new Exception("Unknown argument");
-            }
+            if (arg2 is not null)
+                throw new Exception("Invalid ADD instruction");
+            AssembleArithmeticInstruction(ArithmeticOpcode.SDIV, arg1);
             break;
         case "NGT":
-            switch (arg1[0]) {
-            case '#':
-                if (arg2 is not null)
-                    throw new Exception("Invalid ADD instruction");
-
-                output.WriteByte(0b10110110);
-                output.WriteByte(Convert.FromHexString(arg1.Substring(1))[0]);
-                break;
-            case '$':
-                if (arg2 is not null)
-                    throw new Exception("Invalid ADD instruction");
-
-                if (arg1.Substring(1).Length != 4)
-                    throw new Exception(
-                        "Address must have 4 hexadecimal digits");
-                output.WriteByte(0b10110101);
-                output.WriteByte((byte)Convert.ToInt16(
-                    Convert.FromHexString(arg1.Substring(1))[0] * 256 +
-                    Convert.FromHexString(arg1.Substring(1))[1]));
-                output.WriteByte(
-                    (byte)(Convert.ToInt16(
-                               Convert.FromHexString(arg1.Substring(1))[0] *
-                                   256 +
-                               Convert.FromHexString(arg1.Substring(1))[1]) >>
-                           8));
-                break;
-            case 'A':
-                if (arg1.Length != 1 || arg2 is not null)
-                    throw new Exception("Invalid ADD instruction");
-                output.WriteByte(0b10110000);
-                break;
-
-            case 'B':
-                if (arg1.Length != 1 || arg2 is not null)
-                    throw new Exception("Invalid ADD instruction");
-                output.WriteByte(0b10110001);
-                break;
-
-            case 'C':
-                if (arg1.Length != 1 || arg2 is not null)
-                    throw new Exception("Invalid ADD instruction");
-                output.WriteByte(0b10110010);
-                break;
-
-            case 'D':
-                if (arg1.Length != 1 || arg2 is not null)
-                    throw new Exception("Invalid ADD instruction");
-                output.WriteByte(0b10110011);
-                break;
-            case 'P':
-                if (arg1.Length != 1 || arg2 is not null)
-                    throw new Exception("Invalid ADD instruction");
-                output.WriteByte(0b10110011);
-                break;
-
-            default:
-                throw new Exception("Unknown argument");
-            }
+            if (arg2 is null)
+                throw new Exception("Invalid ADD instruction");
+            AssembleArithmeticInstruction(ArithmeticOpcode.NGT, arg1);
             break;
         default:
             throw new Exception("Unknown operation" + opcode);
         }
     }
+    public static void AssembleArithmeticInstruction(ArithmeticOpcode opcode,
+                                                     string argument) {
+        switch (argument[0]) {
+        case '#':
+            output.WriteByte((byte)(0b10000110 + (int)opcode * 8));
+            output.WriteByte(Convert.FromHexString(argument.Substring(1))[0]);
+            break;
+        case '$':
+            if (argument.Substring(1).Length != 4)
+                throw new Exception("Address must have 4 hexadecimal digits");
+            output.WriteByte((byte)(0b10000101 + (int)opcode * 8));
+            output.WriteByte((byte)Convert.ToInt16(
+                Convert.FromHexString(argument.Substring(1))[0] * 256 +
+                Convert.FromHexString(argument.Substring(1))[1]));
+            output.WriteByte(
+                (byte)(Convert.ToInt16(
+                           Convert.FromHexString(argument.Substring(1))[0] *
+                               256 +
+                           Convert.FromHexString(argument.Substring(1))[1]) >>
+                       8));
+            break;
+        case 'A':
+            output.WriteByte((byte)(0b10000000 + (int)opcode * 8));
+            break;
+
+        case 'B':
+            output.WriteByte((byte)(0b10000001 + (int)opcode * 8));
+            break;
+
+        case 'C':
+            output.WriteByte((byte)(0b10000010 + (int)opcode * 8));
+            break;
+
+        case 'D':
+            output.WriteByte((byte)(0b10000011 + (int)opcode * 8));
+            break;
+        case 'P':
+            output.WriteByte((byte)(0b10000100 + (int)opcode * 8));
+            break;
+
+        default:
+            throw new Exception("Unknown argument");
+        }
+    }
+}
+public enum ArithmeticOpcode {
+    ADD,
+    SUB,
+    MUL,
+    SMUL,
+    DIV,
+    SDIV,
+    NGT
+
 }
