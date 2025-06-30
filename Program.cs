@@ -35,42 +35,87 @@ public class Assembler {
 
         switch (opcode) {
         case "ADD":
-            if (arg2 is not null)
+            if (arg1 is null || arg2 is not null)
                 throw new Exception("Invalid ADD instruction");
             AssembleArithmeticInstruction(ArithmeticOpcode.ADD, arg1);
             break;
         case "SUB":
             if (arg2 is not null)
-                throw new Exception("Invalid ADD instruction");
+                throw new Exception("Invalid SUB instruction");
             AssembleArithmeticInstruction(ArithmeticOpcode.SUB, arg1);
             break;
         case "MUL":
             if (arg2 is not null)
-                throw new Exception("Invalid ADD instruction");
+                throw new Exception("Invalid MUL instruction");
             AssembleArithmeticInstruction(ArithmeticOpcode.MUL, arg1);
             break;
         case "SMUL":
             if (arg2 is not null)
-                throw new Exception("Invalid ADD instruction");
+                throw new Exception("Invalid SMUL instruction");
             AssembleArithmeticInstruction(ArithmeticOpcode.SMUL, arg1);
             break;
         case "DIV":
             if (arg2 is not null)
-                throw new Exception("Invalid ADD instruction");
+                throw new Exception("Invalid DIV instruction");
             AssembleArithmeticInstruction(ArithmeticOpcode.DIV, arg1);
             break;
         case "SDIV":
             if (arg2 is not null)
-                throw new Exception("Invalid ADD instruction");
+                throw new Exception("Invalid SDIV instruction");
             AssembleArithmeticInstruction(ArithmeticOpcode.SDIV, arg1);
             break;
         case "NGT":
-            if (arg2 is null)
-                throw new Exception("Invalid ADD instruction");
+            if (arg2 is not null)
+                throw new Exception("Invalid NGT instruction");
             AssembleArithmeticInstruction(ArithmeticOpcode.NGT, arg1);
             break;
+        case "AND":
+            if (arg2 is not null)
+                throw new Exception("Invalid AND instruction");
+            AssembleBitwiseInstruction(BitwiseOpcode.AND, arg1);
+            break;
+        case "OR":
+            if (arg2 is not null)
+                throw new Exception("Invalid OR instruction");
+            AssembleBitwiseInstruction(BitwiseOpcode.OR, arg1);
+            break;
+        case "XOR":
+            if (arg2 is not null)
+                throw new Exception("Invalid XOR instruction");
+            AssembleBitwiseInstruction(BitwiseOpcode.XOR, arg1);
+            break;
+        case "NOT":
+            if (arg2 is null)
+                throw new Exception("Invalid NOT instruction");
+            AssembleBitwiseInstruction(BitwiseOpcode.NOT, arg1);
+            break;
+        case "SHL":
+            if (arg2 is not null)
+                throw new Exception("Invalid SHL instruction");
+            AssembleBitwiseInstruction(BitwiseOpcode.SHL, arg1);
+            break;
+        case "SHR":
+            if (arg2 is not null)
+                throw new Exception("Invalid SHR instruction");
+            AssembleBitwiseInstruction(BitwiseOpcode.SHR, arg1);
+            break;
+        case "ROL":
+            if (arg2 is not null)
+                throw new Exception("Invalid ROL instruction");
+            AssembleBitwiseInstruction(BitwiseOpcode.ROL, arg1);
+            break;
+        case "ROR":
+            if (arg2 is not null)
+                throw new Exception("Invalid ROR instruction");
+            AssembleBitwiseInstruction(BitwiseOpcode.ROR, arg1);
+            break;
+        case "LOD":
+            if (arg1 is null || arg2 is null)
+                throw new Exception("Invalid LOD instruction");
+            AssembleLoadInstruction(arg1, arg2);
+            break;
         default:
-            throw new Exception("Unknown operation" + opcode);
+            throw new Exception("Unknown operation " + opcode);
         }
     }
     public static void AssembleArithmeticInstruction(ArithmeticOpcode opcode,
@@ -117,6 +162,88 @@ public class Assembler {
             throw new Exception("Unknown argument");
         }
     }
+    public static void AssembleBitwiseInstruction(BitwiseOpcode opcode,
+                                                  string argument) {
+        switch (argument[0]) {
+        case '#':
+            output.WriteByte((byte)(0b11000110 + (int)opcode * 8));
+            output.WriteByte(Convert.FromHexString(argument[1..])[0]);
+            break;
+        case '$':
+            if (argument.Substring(1).Length != 4)
+                throw new Exception("Address must have 4 hexadecimal digits");
+            output.WriteByte((byte)(0b11000101 + (int)opcode * 8));
+            output.WriteByte((byte)Convert.ToInt16(
+                Convert.FromHexString(argument[1..])[0] * 256 +
+                Convert.FromHexString(argument[1..])[1]));
+            output.WriteByte(
+                (byte)(Convert.ToInt16(
+                           Convert.FromHexString(argument[1..])[0] * 256 +
+                           Convert.FromHexString(argument[1..])[1]) >>
+                       8));
+            break;
+        case 'A':
+            output.WriteByte((byte)(0b11000000 + (int)opcode * 8));
+            break;
+
+        case 'B':
+            output.WriteByte((byte)(0b11000001 + (int)opcode * 8));
+            break;
+
+        case 'C':
+            output.WriteByte((byte)(0b11000010 + (int)opcode * 8));
+            break;
+
+        case 'D':
+            output.WriteByte((byte)(0b11000011 + (int)opcode * 8));
+            break;
+        case 'P':
+            output.WriteByte((byte)(0b11000100 + (int)opcode * 8));
+            break;
+
+        default:
+            throw new Exception("Unknown argument");
+        }
+    }
+    public static void AssembleLoadInstruction(string arg1, string arg2) {
+        if (arg2.Length != 1)
+            throw new Exception("Invalid second argument for load instruction");
+        if (arg1[0] == '#') {
+            switch (arg2[0]) {
+            case 'A':
+                output.WriteByte(0b01000000);
+                output.WriteByte(Convert.FromHexString(arg1[1..])[0]);
+
+                break;
+            case 'B':
+                output.WriteByte(0b01000001);
+                output.WriteByte(Convert.FromHexString(arg1[1..])[0]);
+
+                break;
+            case 'C':
+                output.WriteByte(0b01000010);
+                output.WriteByte(Convert.FromHexString(arg1[1..])[0]);
+
+                break;
+            case 'D':
+                output.WriteByte(0b01000011);
+                output.WriteByte((byte)Convert.ToInt16(
+                    Convert.FromHexString(arg1[1..])[0] * 256 +
+                    Convert.FromHexString(arg1[1..])[1]));
+                output.WriteByte(
+                    (byte)(Convert.ToInt16(
+                               Convert.FromHexString(arg1[1..])[0] * 256 +
+                               Convert.FromHexString(arg1[1..])[1]) >>
+                           8));
+
+                break;
+            }
+
+        } else if (arg1[0] == '$') {
+
+        } else
+            throw new Exception("Invalid first argument for load instruction");
+    }
 }
 public enum ArithmeticOpcode {
     ADD,
@@ -126,5 +253,16 @@ public enum ArithmeticOpcode {
     DIV,
     SDIV,
     NGT
+
+}
+public enum BitwiseOpcode {
+    AND,
+    OR,
+    XOR,
+    NOT,
+    SHL,
+    SHR,
+    ROL,
+    ROR
 
 }
